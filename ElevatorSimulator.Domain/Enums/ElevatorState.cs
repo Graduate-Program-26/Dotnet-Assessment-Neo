@@ -1,6 +1,6 @@
 namespace ElevatorSimulator.Domain.Enums;
  
-public enum State
+public enum ElevatorState
 {
    DoorsOpen,
    Moving,
