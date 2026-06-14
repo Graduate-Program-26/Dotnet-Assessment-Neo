@@ -105,11 +105,12 @@ public class ElevatorBaseTests
     }
 
     [Fact]
-    public void DropOffPassengers_DoesNotGoBelowZero()
+    public void DropOffPassengers_Throws_WhenCountExceedsPassengersOnBoard()
     {
         var elevator = new PassengerElevator(1);
         elevator.PickUpPassengers(3);
-        elevator.DropOffPassengers(10);
-        Assert.Equal(0, elevator.PassengerCount);
+        Assert.Throws<InvalidDropOffException>(
+            () => elevator.DropOffPassengers(10)
+        );
     }
 }
