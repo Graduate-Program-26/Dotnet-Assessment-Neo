@@ -1,4 +1,4 @@
-namespace ElevatorSimulator.Domain;
+namespace ElevatorSimulator.Domain.Interfaces;
 
 using ElevatorSimulator.Domain.Enums;
 
