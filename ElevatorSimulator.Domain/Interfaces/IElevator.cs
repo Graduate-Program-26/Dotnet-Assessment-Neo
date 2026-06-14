@@ -14,4 +14,6 @@ public interface IElevator
 
     void pickUpPassengers(int count);
     void dropOffPassengers(int count);
+
+    Task MoveToFloor(int floor);
 }
