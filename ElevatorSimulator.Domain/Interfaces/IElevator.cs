@@ -12,8 +12,8 @@ public interface IElevator
     ElevatorDirection Direction { get; }
     ElevatorState State { get; }
 
-    void pickUpPassengers(int count);
-    void dropOffPassengers(int count);
+    void PickUpPassengers(int count);
+    void DropOffPassengers(int count);
 
     Task MoveToFloor(int floor);
 }
