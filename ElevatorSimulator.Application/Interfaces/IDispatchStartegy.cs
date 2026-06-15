@@ -5,5 +5,6 @@ using ElevatorSimulator.Domain.Interfaces;
 
 public interface IDispatchStrategy
 {
-    IElevator SelectElevator(IEnumerable<IElevator> elevators, ElevatorRequest request);
+    //nullable because it might not find an available elevator 
+    IElevator? SelectElevator(IEnumerable<IElevator> elevators, ElevatorRequest request);
 }
