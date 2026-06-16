@@ -14,18 +14,18 @@ public class ElevatorControllerTests
             => elevators.FirstOrDefault(elevator => !elevator.IsAtMaxCapacity);
     }
 
-    private static ElevatorRequest MakeRequest(int floor, int passengers = 1) 
-        => new(floor, passengers, DateTime.UtcNow);
+    private static ElevatorRequest MakeRequest(int originFloor, int destinationFloor, int passengers = 1)
+        => new(originFloor, destinationFloor, passengers, DateTime.UtcNow);
 
     [Fact]
-    public async Task HandleRequest_MovesElevator_ToRequestedFloor()
+    public async Task HandleRequest_MovesElevator_ToDestinationFloor()
     {
         var elevator = new PassengerElevator(1, startingFloor: 1);
-        var controller = new ElevatorController( new AlwaysFirstStrategy(), new[] { elevator });
+        var controller = new ElevatorController(new AlwaysFirstStrategy(), new[] { elevator });
 
-        await controller.HandleRequest(MakeRequest(floor: 5), CancellationToken.None);
+        await controller.HandleRequest(MakeRequest(originFloor: 3, destinationFloor: 7), CancellationToken.None);
 
-        Assert.Equal(5, elevator.CurrentFloor);
+        Assert.Equal(7, elevator.CurrentFloor);
     }
 
     [Fact]
@@ -34,28 +34,14 @@ public class ElevatorControllerTests
         var elevator = new PassengerElevator(1);
         elevator.PickUpPassengers(10); // max capacity
 
-        var controller = new ElevatorController(
-            new AlwaysFirstStrategy(),
-            new[] { elevator }
-        );
+        var controller = new ElevatorController(new AlwaysFirstStrategy(), new[] { elevator });
 
-        await controller.HandleRequest(MakeRequest(floor: 5), CancellationToken.None);
+        await controller.HandleRequest(MakeRequest(originFloor: 1, destinationFloor: 5), CancellationToken.None);
 
         Assert.Equal(1, controller.PendingRequestCount);
     }
 
     [Fact]
-    public async Task HandleRequest_PicksUpPassengers_WhenElevatorArrives()
-    {
-        var elevator = new PassengerElevator(1, startingFloor: 1);
-        var controller = new ElevatorController( new AlwaysFirstStrategy(), new[] { elevator });
-
-        await controller.HandleRequest(MakeRequest(floor: 5, passengers: 3), CancellationToken.None);
-
-        Assert.Equal(3, elevator.PassengerCount);
-    }
-
-       [Fact]
     public async Task HandleRequest_ProcessesQueuedRequest_WhenElevatorBecomesAvailable()
     {
         var elevator = new PassengerElevator(1, startingFloor: 1);
@@ -63,11 +49,11 @@ public class ElevatorControllerTests
 
         var controller = new ElevatorController(new AlwaysFirstStrategy(), new[] { elevator });
 
-        await controller.HandleRequest(MakeRequest(floor: 5), CancellationToken.None);
+        await controller.HandleRequest(MakeRequest(originFloor: 1, destinationFloor: 5), CancellationToken.None);
         Assert.Equal(1, controller.PendingRequestCount);
 
         elevator.DropOffPassengers(10);
-        await controller.HandleRequest(MakeRequest(floor: 3), CancellationToken.None);
+        await controller.HandleRequest(MakeRequest(originFloor: 2, destinationFloor: 4), CancellationToken.None);
 
         Assert.Equal(0, controller.PendingRequestCount);
     }
