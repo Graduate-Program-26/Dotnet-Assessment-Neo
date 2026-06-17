@@ -57,4 +57,16 @@ public class ElevatorControllerTests
 
         Assert.Equal(0, controller.PendingRequestCount);
     }
+
+    [Fact]
+    public async Task HandleRequest_PicksUpAndDropsOffPassengers_OnFullTrip()
+    {
+        var elevator = new PassengerElevator(1, startingFloor: 1);
+        var controller = new ElevatorController(new AlwaysFirstStrategy(), new List<IElevator> { elevator }.AsReadOnly());
+
+        await controller.HandleRequest(MakeRequest(originFloor: 3, destinationFloor: 7, passengers: 4), CancellationToken.None);
+
+        Assert.Equal(7, elevator.CurrentFloor);
+        Assert.Equal(0, elevator.PassengerCount);
+    }
 }
