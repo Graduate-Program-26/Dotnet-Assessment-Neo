@@ -4,6 +4,11 @@ using ElevatorSimulator.Domain.Enums;
 using ElevatorSimulator.Domain.Exceptions;
 using ElevatorSimulator.Domain.Interfaces;
 
+/// <summary>
+/// Provides a base implementation of <see cref="IElevator"/> with common movement and
+/// passenger-management logic. Concrete elevator types must supply their capacity and
+/// per-floor travel time.
+/// </summary>
 public abstract class ElevatorBase : IElevator
 {
     public int ElevatorId { get; }
@@ -14,8 +19,13 @@ public abstract class ElevatorBase : IElevator
     public bool IsAtMaxCapacity => PassengerCount >= MaxCapacity;
 
     public abstract int MaxCapacity { get; }
+
+    /// <summary>Gets the time in milliseconds the elevator takes to travel one floor.</summary>
     protected abstract int FloorTravelTimeMs { get; }
 
+    /// <summary>
+    /// Initializes a new elevator with the given identifier and starting floor.
+    /// </summary>
     protected ElevatorBase(int elevatorId, int startingFloor = 1)
     {
         ElevatorId = elevatorId;
